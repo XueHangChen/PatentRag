@@ -1,0 +1,23 @@
+project:
+  name: Patent KG Agent
+  env: local
+
+paths:
+  raw_patent_dir: patant
+  processed_dir: data/processed
+  indexes_dir: data/indexes
+  graph_dir: data/graph
+  log_dir: logs
+
+ingestion:
+  encoding: utf-8
+  keep_image_refs: true
+
+retrieval:
+  top_k: 8
+  hybrid_alpha: 0.5
+
+agent:
+  require_citations: true
+  allow_legal_conclusion: false
+
