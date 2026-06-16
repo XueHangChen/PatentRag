@@ -1,41 +1,65 @@
 # PatentRAG: 中文专利 GraphRAG Agent 系统
 
-PatentRAG 是一个面向中文专利文档的 Agentic RAG 项目。系统围绕 20 篇中文专利 Markdown 文档，构建了从文档解析、混合检索、知识图谱、GraphRAG、LangGraph Agent 到可解释前端工作台的完整链路。
+PatentRAG 是一个面向中文专利文档的 Agentic RAG 项目。它围绕 20 篇中文专利 Markdown 文档，构建了从文档解析、混合检索、知识图谱、GraphRAG、LangGraph Agent 到可解释前端工作台的端到端系统。
 
-这个项目的目标不是做一个简单问答 Demo，而是展示一个更接近真实业务场景的专利知识助手：用户可以提出技术问题、检索相关专利、分析已有方案、查看原文证据和图谱证据，并通过 Agent 工作台观察规划、工具调用和执行轨迹。
+项目重点不是“把多个 AI 技术名词串起来”，而是验证一个更具体的问题：**当用户询问专利中的技术问题、结构组件、方案效果和可借鉴设计时，系统如何同时给出答案、原文依据和结构化图谱证据。**
 
-## Highlights
+## Problem Statement
 
-- **Hybrid Retrieval**: 支持 BM25 关键词检索、Chroma 向量检索和 Hybrid 检索。
-- **GraphRAG**: 将原文 chunk 证据 `[S]` 与知识图谱证据 `[G]` 一起提供给 LLM 生成答案。
-- **LLM Technical Graph Extraction**: 使用大模型抽取技术领域、技术问题、关键组件、技术方案和技术效果。
-- **LangGraph Agent Runtime**: 使用 LangGraph 编排 Agent 节点，支持规划、工具调用、图谱增强问答、自检和最终回答。
-- **Explainable Frontend**: React 工作台展示答案、Plan、Trace、LangGraph node trace、原文证据和图谱证据。
-- **Evaluation Pipeline**: 提供 GraphRAG 评估问题集和自动评估脚本，用于记录证据命中率和引用覆盖率。
+普通 RAG 可以从专利文本中召回相关片段，但在专利分析场景里，仅靠片段相似度往往不够：
 
-## Demo Questions
+- 同一个技术方案可能分散在摘要、背景技术、权利要求和说明书中。
+- 用户常问的是“解决了什么问题”“用了哪些组件”“有哪些方案可以借鉴”，这些问题天然带有结构化关系。
+- 面试或实际业务场景中，系统不能只给结论，还需要说明答案来自哪些原文片段和图谱证据。
 
-可以用下面的问题测试系统效果：
+因此，本项目在 Hybrid Retrieval 之上增加了专利技术图谱和 GraphRAG，将原文证据 `[S]` 与图谱证据 `[G]` 一起纳入生成过程，并在前端展示 Agent 的规划、工具调用和证据来源。
 
-```text
-哪些专利使用清洗箱、喷嘴或雾化器？它们分别解决了什么技术问题？
-```
+## Design Goals
 
-```text
-哪些专利解决了护理床翻身、身体支撑或长期受压相关问题？
-```
+- **可检索**：支持关键词、向量和混合检索，覆盖不同表达方式的专利问题。
+- **可追溯**：回答中保留原文 chunk 与图谱证据，避免只有模型自由生成。
+- **可解释**：前端展示 Plan、Trace、LangGraph node trace 和 evidence cards。
+- **可评估**：提供 GraphRAG 问题集和自动评估脚本，记录证据命中与引用覆盖。
+- **可扩展**：Agent、检索、图谱抽取和评估模块保持相对独立，便于后续替换模型或扩展工具。
 
-```text
-我想设计一个医疗器械清洗装置，可以借鉴哪些现有专利结构，并需要避免哪些问题？
-```
+## Implemented Capabilities
+
+| Subsystem | What is implemented |
+| --- | --- |
+| Document pipeline | Parse raw Chinese patent Markdown into structured patent records and retrieval chunks. |
+| Retrieval | BM25 keyword search, Chroma vector search, and Hybrid Retrieval. |
+| Knowledge graph | Build a patent graph with Patent, Claim, Keyword, IPC, Applicant and technical semantic nodes. |
+| LLM technical extraction | Extract TechnicalField, Problem, Component, Solution and Effect nodes with optional LLM extraction. |
+| GraphRAG | Combine retrieved chunks and graph evidence into answer generation. |
+| Agent runtime | Use LangGraph to run planning, tool execution, graph-enhanced QA, self-check and finalization. |
+| Frontend observability | React workspace for answer, plan, trace, node trace, source evidence and graph evidence. |
+| Evaluation | GraphRAG evaluation cases, automated result recording and citation/hit-rate metrics. |
+
+## Key Design Decisions
+
+### Why Hybrid Retrieval instead of vector-only search?
+
+Patent text contains many exact technical terms, publication numbers, IPC classes and component names. BM25 is useful for exact lexical matches, while vector search helps with semantic variants. The system therefore keeps both and uses hybrid retrieval when answering open-ended questions.
+
+### Why add graph evidence on top of RAG?
+
+Many patent questions are relational: a component solves a problem, a structure produces an effect, or a patent belongs to a technical field. A graph representation makes these relations explicit and allows the answer generator to receive structured evidence, not only raw text chunks.
+
+### Why use LangGraph?
+
+The Agent flow contains multiple states: planning, retrieval, graph expansion, GraphRAG answer generation, self-check and final assembly. LangGraph makes these intermediate states observable and easier to debug than a single opaque function chain.
+
+### Why show evidence in the frontend?
+
+For this project, the UI is not just a chat page. It is an inspection surface for the whole RAG/Agent pipeline. Showing source evidence, graph evidence and traces makes it possible to judge whether a wrong answer came from retrieval, graph matching, planning or generation.
 
 ## Architecture
 
 ```mermaid
 flowchart LR
     A["User Query"] --> B["React Frontend"]
-    B --> C["FastAPI"]
-    C --> D["LangGraph Agent"]
+    B --> C["FastAPI API"]
+    C --> D["LangGraph Agent Runtime"]
     D --> E["Planner / Replanner"]
     E --> F["Hybrid Retrieval"]
     E --> G["Graph Search"]
@@ -44,7 +68,7 @@ flowchart LR
     H --> J["GraphRAG Prompt"]
     I --> J
     J --> K["LLM Answer"]
-    K --> L["Answer + Evidence UI"]
+    K --> L["Answer + Plan + Trace + Evidence UI"]
 ```
 
 ## Tech Stack
@@ -59,12 +83,12 @@ flowchart LR
 | Frontend | React, TypeScript, Vite |
 | Testing | pytest, Node test runner |
 
-## Project Structure
+## Repository Structure
 
 ```text
 configs/              Configuration templates
 data/                 Local data, indexes, graph artifacts, evaluation cases
-docs/                 Architecture docs, evaluation reports, implementation notes
+docs/                 Architecture docs, evaluation reports and implementation notes
 frontend/             React + TypeScript frontend
 logs/                 Local runtime logs
 patant/               Raw Chinese patent Markdown files
@@ -73,44 +97,41 @@ src/patent_rag/       Backend, retrieval, graph, RAG and Agent source code
 tests/                Python test suite
 ```
 
-Large generated artifacts such as vector indexes and graph JSON files are ignored by Git. Rebuild them locally with the scripts below.
+Generated local artifacts are intentionally ignored by Git, including `.env`, `frontend/dist`, `frontend/node_modules`, `data/processed`, `data/indexes` and `data/graph`.
 
 ## Quick Start
 
-### 1. Install Backend Dependencies
+### 1. Clone and install backend dependencies
 
 ```powershell
-cd D:\WorkTool\Patent_RAG
+git clone https://github.com/XueHangChen/PatentRag.git
+cd PatentRag
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 pip install -e ".[dev,llm,vector]"
 ```
 
-If the virtual environment already exists:
+### 2. Configure environment
 
-```powershell
-.\.venv\Scripts\Activate.ps1
-```
+Copy `.env.example` to `.env`.
 
-### 2. Configure Environment
-
-Copy `.env.example` to `.env`, then configure your model provider if you want LLM generation:
+For LLM generation with DashScope/Qwen:
 
 ```dotenv
 PATENT_RAG_LLM_PROVIDER=dashscope
 PATENT_RAG_LLM_MODEL=qwen-plus
 PATENT_RAG_LLM_MAX_TOKENS=4000
-PATENT_RAG_DASHSCOPE_API_KEY=your-dashscope-api-key
+PATENT_RAG_DASHSCOPE_API_KEY=your-api-key
 PATENT_RAG_DASHSCOPE_BASE_URL=https://dashscope.aliyuncs.com/compatible-mode/v1
 ```
 
-For offline tests, keep:
+For offline tests, keep the hashing embedding provider:
 
 ```dotenv
 PATENT_RAG_EMBEDDING_PROVIDER=hashing
 ```
 
-### 3. Build Local Data
+### 3. Build local artifacts
 
 ```powershell
 python scripts\ingest_patents.py
@@ -125,7 +146,7 @@ To build an LLM-enhanced technical graph:
 python scripts\build_graph.py --llm-technical --llm-graph-max-patents 20 --output data\graph\patent_graph_llm_full20_fixed.json
 ```
 
-### 4. Start Backend
+### 4. Start backend
 
 ```powershell
 .\.venv\Scripts\python.exe -m uvicorn patent_rag.api.main:app --reload --app-dir src --host 127.0.0.1 --port 8000
@@ -137,13 +158,7 @@ API docs:
 http://127.0.0.1:8000/docs
 ```
 
-Health check:
-
-```powershell
-Invoke-WebRequest http://127.0.0.1:8000/health
-```
-
-### 5. Start Frontend
+### 5. Start frontend
 
 ```powershell
 cd frontend
@@ -157,14 +172,21 @@ Open:
 http://127.0.0.1:5173/
 ```
 
-If port `5173` is occupied, stop the old process first:
+## Demo Questions
 
-```powershell
-netstat -ano | Select-String ':5173'
-Stop-Process -Id <PID>
+```text
+哪些专利使用清洗箱、喷嘴或雾化器？它们分别解决了什么技术问题？
 ```
 
-## Main API Endpoints
+```text
+哪些专利解决了护理床翻身、身体支撑或长期受压相关问题？
+```
+
+```text
+我想设计一个医疗器械清洗装置，可以借鉴哪些现有专利结构，并需要避免哪些问题？
+```
+
+## API Overview
 
 | Method | Endpoint | Description |
 | --- | --- | --- |
@@ -178,22 +200,23 @@ Stop-Process -Id <PID>
 
 ## Evaluation
 
-GraphRAG evaluation files:
+The repository includes a small GraphRAG evaluation set:
 
 - `data/evaluation/graphrag_cases.jsonl`
 - `scripts/evaluate_graphrag.py`
 - `docs/evaluation/graphrag_eval_latest.md`
 
-Latest recorded evaluation summary:
+Latest recorded result on 6 evaluation cases:
 
 | Metric | Value |
 | --- | ---: |
-| Cases | 6 |
 | Expected graph hit rate | 1.0 |
 | Expected any hit rate | 1.0 |
 | Graph citation rate | 1.0 |
 | Source citation rate | 1.0 |
 | Average answer length | 1868.33 |
+
+These numbers describe the current internal evaluation set only. The evaluation set is intentionally small and should be expanded before making broader claims about answer quality.
 
 Run evaluation:
 
@@ -223,42 +246,22 @@ cd frontend
 npm.cmd run build
 ```
 
-Current verified status:
+Recent local verification:
 
 - Python test suite: `94 passed`
 - Frontend evidence tests: `3 passed`
 - Frontend production build: passed
 
-## What The Agent Shows
+## Current Scope and Limitations
 
-The Agent workspace exposes more than the final answer:
-
-- **Intent**: detected user task type, such as patent QA or idea analysis.
-- **Plan**: planned tool steps.
-- **Trace**: actual tool execution observations.
-- **LangGraph node trace**: runtime node-level state.
-- **Source evidence `[S]`**: original patent chunks from retrieval.
-- **Graph evidence `[G]`**: structured technical evidence from the knowledge graph.
-
-Graph evidence cards include technical fields, problems, components, solutions, effects, matched terms and supporting chunk ids.
+- The included dataset is small: 20 Chinese patent Markdown files.
+- Generated graph and vector index artifacts are not committed; they must be rebuilt locally.
+- LLM-based extraction depends on the configured model provider and may vary across runs.
+- The current evaluation set checks evidence retrieval and citation coverage, but it is not a comprehensive benchmark.
+- This project is for technical retrieval and analysis. It is not a legal patentability, infringement or freedom-to-operate opinion system.
 
 ## Roadmap
 
-- Add more end-to-end evaluation cases and answer-quality scoring.
-- Improve LLM planner and replanner with stricter structured-output validation.
-- Add graph visualization for patent-component-problem-solution relations.
+- Expand the evaluation set and add answer-quality scoring.
+- Improve graph visualization for patent-component-problem-solution relations.
 - Add streaming Agent output for long-running tasks.
-- Package a public demo dataset and screenshots for easier GitHub review.
-
-## Notes
-
-This repository intentionally keeps generated local artifacts out of Git:
-
-- `.env`
-- `frontend/dist`
-- `frontend/node_modules`
-- `data/processed`
-- `data/indexes`
-- `data/graph`
-
-Use the build scripts to regenerate them locally.
