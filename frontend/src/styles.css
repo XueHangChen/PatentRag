@@ -229,16 +229,8 @@ h1 {
 }
 
 .search-form button:disabled,
-.graph-form button:disabled {
-  cursor: wait;
-  opacity: 0.65;
-}
-
-.qa-form button:disabled {
-  cursor: wait;
-  opacity: 0.65;
-}
-
+.graph-form button:disabled,
+.qa-form button:disabled,
 .agent-form button:disabled {
   cursor: wait;
   opacity: 0.65;
@@ -251,7 +243,7 @@ h1 {
 
 .agent-summary-row {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: 10px;
   padding: 0 18px;
 }
@@ -303,7 +295,7 @@ h1 {
 
 .agent-trace-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 16px;
   padding: 0 18px;
 }
@@ -428,6 +420,23 @@ h1 {
   background: #f7fbff;
 }
 
+.evidence-section {
+  display: grid;
+  gap: 10px;
+}
+
+.evidence-section > h3 {
+  margin: 0;
+  padding: 0 18px;
+  color: #202938;
+  font-size: 16px;
+}
+
+.graph-rag-source-list,
+.agent-graph-source-list {
+  padding-top: 0;
+}
+
 .result-title-row {
   display: flex;
   align-items: flex-start;
@@ -480,6 +489,46 @@ h1 {
   background: #eef4ff;
   color: #2f4968;
   font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+.evidence-groups {
+  display: grid;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.evidence-group {
+  min-width: 0;
+}
+
+.evidence-group-label {
+  display: block;
+  color: #2f4968;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.evidence-chip-row {
+  margin-top: 8px;
+}
+
+.supporting-chunks {
+  display: grid;
+  gap: 6px;
+  margin-top: 12px;
+  color: #526070;
+  font-size: 13px;
+}
+
+.supporting-chunks code {
+  display: block;
+  max-width: 100%;
+  padding: 8px;
+  border: 1px solid #d8e0ec;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #334155;
   overflow-wrap: anywhere;
 }
 

@@ -13,6 +13,14 @@ from patent_rag.graph import read_graph_json
 from patent_rag.retrieval import SearchHit
 
 GRAPH_QUERY_TERM_PATTERN = re.compile(r"[\u4e00-\u9fffA-Za-z0-9]{2,20}")
+TECHNICAL_LABELS = {"TechnicalField", "Problem", "Component", "Solution", "Effect"}
+TECHNICAL_RELATIONS = {
+    "HAS_TECHNICAL_FIELD",
+    "SOLVES_PROBLEM",
+    "USES_COMPONENT",
+    "PROPOSES_SOLUTION",
+    "HAS_EFFECT",
+}
 
 
 class GraphEvidence(BaseModel):
@@ -30,6 +38,11 @@ class GraphEvidence(BaseModel):
     ipc_classes: list[str] = Field(default_factory=list)
     section_names: list[str] = Field(default_factory=list)
     claim_numbers: list[int] = Field(default_factory=list)
+    technical_fields: list[str] = Field(default_factory=list)
+    problems: list[str] = Field(default_factory=list)
+    components: list[str] = Field(default_factory=list)
+    solutions: list[str] = Field(default_factory=list)
+    effects: list[str] = Field(default_factory=list)
     relation_summary: str
 
 
@@ -73,17 +86,21 @@ def retrieve_graph_evidence(
 
     query_terms = _extract_query_terms(question)
     for node_id, data in graph.nodes(data=True):
-        if data.get("label") != "Keyword":
+        label = data.get("label")
+        if label != "Keyword" and label not in TECHNICAL_LABELS:
             continue
-        keyword = str(data.get("name", ""))
-        matched_terms = _matched_terms(keyword, query_terms, question)
+        node_name = str(data.get("name", ""))
+        matched_terms = _matched_terms(node_name, query_terms, question)
         if not matched_terms:
             continue
         for source_id, _, edge_data in graph.in_edges(node_id, data=True):
-            if edge_data.get("relation") != "MENTIONS_KEYWORD":
+            relation = edge_data.get("relation")
+            if relation != "MENTIONS_KEYWORD" and relation not in TECHNICAL_RELATIONS:
                 continue
-            patent_data = graph.nodes[source_id]
-            patent_id = patent_data.get("properties", {}).get("patent_id", source_id)
+            source_data = graph.nodes[source_id]
+            if source_data.get("label") != "Patent":
+                continue
+            patent_id = str(source_data.get("properties", {}).get("patent_id", source_id))
             candidate = candidates.setdefault(
                 patent_id,
                 _GraphCandidate(patent_node_id=source_id),
@@ -125,6 +142,11 @@ def _build_graph_evidence(
     ipc_classes: list[str] = []
     section_names: list[str] = []
     claim_numbers: list[int] = []
+    technical_fields: list[str] = []
+    problems: list[str] = []
+    components: list[str] = []
+    solutions: list[str] = []
+    effects: list[str] = []
 
     for _, target_id, edge_data in graph.out_edges(candidate.patent_node_id, data=True):
         relation = edge_data.get("relation")
@@ -146,6 +168,16 @@ def _build_graph_evidence(
             claim_number = _safe_int(target_properties.get("claim_number"))
             if claim_number is not None and claim_number not in claim_numbers:
                 claim_numbers.append(claim_number)
+        elif relation == "HAS_TECHNICAL_FIELD":
+            _append_unique(technical_fields, target_name)
+        elif relation == "SOLVES_PROBLEM":
+            _append_unique(problems, target_name)
+        elif relation == "USES_COMPONENT":
+            _append_unique(components, target_name)
+        elif relation == "PROPOSES_SOLUTION":
+            _append_unique(solutions, target_name)
+        elif relation == "HAS_EFFECT":
+            _append_unique(effects, target_name)
 
     claim_numbers.sort()
     relation_summary = _build_relation_summary(
@@ -155,6 +187,11 @@ def _build_graph_evidence(
         ipc_classes=ipc_classes,
         section_names=section_names,
         claim_numbers=claim_numbers,
+        technical_fields=technical_fields,
+        problems=problems,
+        components=components,
+        solutions=solutions,
+        effects=effects,
     )
     return GraphEvidence(
         source_id=f"G{source_index}",
@@ -169,6 +206,11 @@ def _build_graph_evidence(
         ipc_classes=ipc_classes,
         section_names=section_names,
         claim_numbers=claim_numbers,
+        technical_fields=technical_fields,
+        problems=problems,
+        components=components,
+        solutions=solutions,
+        effects=effects,
         relation_summary=relation_summary,
     )
 
@@ -181,21 +223,36 @@ def _build_relation_summary(
     ipc_classes: list[str],
     section_names: list[str],
     claim_numbers: list[int],
+    technical_fields: list[str],
+    problems: list[str],
+    components: list[str],
+    solutions: list[str],
+    effects: list[str],
 ) -> str:
     parts: list[str] = []
     if keywords:
-        parts.append(f"关键词：{'、'.join(keywords[:8])}")
+        parts.append(f"Keywords: {', '.join(keywords[:8])}")
     if applicants:
-        parts.append(f"申请人：{'、'.join(applicants[:4])}")
+        parts.append(f"Applicants: {', '.join(applicants[:4])}")
     if inventors:
-        parts.append(f"发明人：{'、'.join(inventors[:4])}")
+        parts.append(f"Inventors: {', '.join(inventors[:4])}")
     if ipc_classes:
-        parts.append(f"IPC：{'、'.join(ipc_classes[:4])}")
+        parts.append(f"IPC: {', '.join(ipc_classes[:4])}")
     if section_names:
-        parts.append(f"章节：{'、'.join(section_names[:6])}")
+        parts.append(f"Sections: {', '.join(section_names[:6])}")
     if claim_numbers:
-        parts.append(f"权利要求数量：{len(claim_numbers)}")
-    return "；".join(parts) if parts else "图谱中仅存在该专利节点，暂无展开关系。"
+        parts.append(f"Claim count: {len(claim_numbers)}")
+    if technical_fields:
+        parts.append(f"Technical fields: {', '.join(technical_fields[:5])}")
+    if problems:
+        parts.append(f"Technical problems: {', '.join(problems[:5])}")
+    if components:
+        parts.append(f"Key components: {', '.join(components[:8])}")
+    if solutions:
+        parts.append(f"Technical solutions: {', '.join(solutions[:5])}")
+    if effects:
+        parts.append(f"Technical effects: {', '.join(effects[:5])}")
+    return "; ".join(parts) if parts else "Graph contains this patent node only."
 
 
 def _extract_query_terms(question: str) -> set[str]:
@@ -207,12 +264,15 @@ def _extract_query_terms(question: str) -> set[str]:
     return {term for term in terms if len(term) >= 2}
 
 
-def _matched_terms(keyword: str, query_terms: set[str], question: str) -> set[str]:
+def _matched_terms(node_name: str, query_terms: set[str], question: str) -> set[str]:
     matches: set[str] = set()
-    if keyword and keyword in question:
-        matches.add(keyword)
+    node_name_cf = node_name.casefold()
+    question_cf = question.casefold()
+    if node_name and node_name_cf in question_cf:
+        matches.add(node_name)
     for term in query_terms:
-        if term in keyword or keyword in term:
+        term_cf = term.casefold()
+        if term_cf in node_name_cf or node_name_cf in term_cf:
             matches.add(term)
     return matches
 

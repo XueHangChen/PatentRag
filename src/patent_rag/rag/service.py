@@ -7,6 +7,7 @@ from typing import Literal
 
 from pydantic import BaseModel, Field
 
+from patent_rag.config import get_settings
 from patent_rag.llm import ChatClient, create_chat_client
 from patent_rag.rag.graph_context import GraphEvidence, retrieve_graph_evidence
 from patent_rag.rag.prompting import build_rag_messages
@@ -51,6 +52,11 @@ class RagGraphSource(BaseModel):
     ipc_classes: list[str] = Field(default_factory=list)
     section_names: list[str] = Field(default_factory=list)
     claim_numbers: list[int] = Field(default_factory=list)
+    technical_fields: list[str] = Field(default_factory=list)
+    problems: list[str] = Field(default_factory=list)
+    components: list[str] = Field(default_factory=list)
+    solutions: list[str] = Field(default_factory=list)
+    effects: list[str] = Field(default_factory=list)
     relation_summary: str
 
 
@@ -74,7 +80,7 @@ class RagService:
         *,
         chunks_path: Path = Path("data") / "processed" / "chunks.jsonl",
         index_path: Path = Path("data") / "indexes" / "chroma",
-        graph_path: Path = Path("data") / "graph" / "patent_graph.json",
+        graph_path: Path | None = None,
         collection_name: str = "patent_chunks",
         chat_client: ChatClient | None = None,
         embedding_provider: str | None = None,
@@ -84,7 +90,7 @@ class RagService:
     ) -> None:
         self.chunks_path = chunks_path
         self.index_path = index_path
-        self.graph_path = graph_path
+        self.graph_path = graph_path or get_settings().graph_path
         self.collection_name = collection_name
         self.chat_client = chat_client or create_chat_client()
         self.embedding_provider = embedding_provider
@@ -186,7 +192,7 @@ def answer_patent_question(
     chat_client: ChatClient | None = None,
     chunks_path: Path = Path("data") / "processed" / "chunks.jsonl",
     index_path: Path = Path("data") / "indexes" / "chroma",
-    graph_path: Path = Path("data") / "graph" / "patent_graph.json",
+    graph_path: Path | None = None,
     collection_name: str = "patent_chunks",
     top_k: int = 5,
     retrieval_mode: RetrievalMode = "hybrid",
@@ -264,6 +270,11 @@ def _to_graph_sources(graph_evidence: list[GraphEvidence]) -> list[RagGraphSourc
             ipc_classes=evidence.ipc_classes,
             section_names=evidence.section_names,
             claim_numbers=evidence.claim_numbers,
+            technical_fields=evidence.technical_fields,
+            problems=evidence.problems,
+            components=evidence.components,
+            solutions=evidence.solutions,
+            effects=evidence.effects,
             relation_summary=evidence.relation_summary,
         )
         for evidence in graph_evidence

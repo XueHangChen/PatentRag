@@ -31,7 +31,7 @@ class PatentAgentService:
         patents_path: Path = Path("data") / "processed" / "patents.jsonl",
         chunks_path: Path = Path("data") / "processed" / "chunks.jsonl",
         index_path: Path = Path("data") / "indexes" / "chroma",
-        graph_path: Path = Path("data") / "graph" / "patent_graph.json",
+        graph_path: Path | None = None,
         collection_name: str = "patent_chunks",
         chat_client: ChatClient | None = None,
         embedding_provider: str | None = None,
@@ -162,7 +162,7 @@ def run_patent_agent(
     patents_path: Path = Path("data") / "processed" / "patents.jsonl",
     chunks_path: Path = Path("data") / "processed" / "chunks.jsonl",
     index_path: Path = Path("data") / "indexes" / "chroma",
-    graph_path: Path = Path("data") / "graph" / "patent_graph.json",
+    graph_path: Path | None = None,
     collection_name: str = "patent_chunks",
     top_k: int = 5,
     retrieval_mode: RetrievalMode = "hybrid",
@@ -174,7 +174,9 @@ def run_patent_agent(
 ) -> AgentRunResult:
     """Convenience helper for one-shot Agent runs."""
 
-    service = PatentAgentService(
+    from patent_rag.agent.langgraph_service import LangGraphPatentAgentService
+
+    service = LangGraphPatentAgentService(
         patents_path=patents_path,
         chunks_path=chunks_path,
         index_path=index_path,

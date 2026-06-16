@@ -58,6 +58,11 @@ export type RagGraphSource = {
   ipc_classes: string[];
   section_names: string[];
   claim_numbers: number[];
+  technical_fields: string[];
+  problems: string[];
+  components: string[];
+  solutions: string[];
+  effects: string[];
   relation_summary: string;
 };
 
@@ -99,6 +104,16 @@ export type AgentToolStep = {
   output: Record<string, unknown>;
 };
 
+export type AgentPlannerMode = "rule" | "rule_only" | "llm" | "hybrid";
+
+export type AgentNodeTrace = {
+  node_name: string;
+  status: "success" | "skipped" | "error";
+  details: Record<string, unknown>;
+  latency_ms: number;
+  error: string | null;
+};
+
 export type AgentRunResult = {
   query: string;
   intent: AgentIntent;
@@ -110,6 +125,10 @@ export type AgentRunResult = {
   steps: AgentToolStep[];
   sources: RagSource[];
   graph_sources: RagGraphSource[];
+  planner_mode?: AgentPlannerMode;
+  node_trace?: AgentNodeTrace[];
+  graph_state?: Record<string, unknown>;
+  checkpoint_id?: string | null;
 };
 
 export type GraphStats = {

@@ -11,6 +11,7 @@ from patent_rag.agent.schemas import (
     PatentSearchToolResult,
     PatentSummaryToolResult,
 )
+from patent_rag.config import get_settings
 from patent_rag.domain import PatentDocument
 from patent_rag.graph import find_patents_by_keyword, read_graph_json
 from patent_rag.ingestion.jsonl import read_jsonl
@@ -37,7 +38,7 @@ class PatentAgentTools:
         patents_path: Path = Path("data") / "processed" / "patents.jsonl",
         chunks_path: Path = Path("data") / "processed" / "chunks.jsonl",
         index_path: Path = Path("data") / "indexes" / "chroma",
-        graph_path: Path = Path("data") / "graph" / "patent_graph.json",
+        graph_path: Path | None = None,
         collection_name: str = "patent_chunks",
         chat_client: ChatClient | None = None,
         embedding_provider: str | None = None,
@@ -48,7 +49,7 @@ class PatentAgentTools:
         self.patents_path = patents_path
         self.chunks_path = chunks_path
         self.index_path = index_path
-        self.graph_path = graph_path
+        self.graph_path = graph_path or get_settings().graph_path
         self.collection_name = collection_name
         self.chat_client = chat_client
         self.embedding_provider = embedding_provider

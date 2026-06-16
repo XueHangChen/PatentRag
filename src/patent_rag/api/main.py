@@ -14,10 +14,18 @@ from patent_rag.ingestion.jsonl import read_jsonl
 from patent_rag.rag import answer_patent_question
 from patent_rag.retrieval import search_chunks, search_hybrid_chunks, search_vector_chunks
 
+
+def _resolve_graph_path(graph_dir: Path) -> Path:
+    enhanced_graph_path = graph_dir / "patent_graph_llm_full20_fixed.json"
+    if enhanced_graph_path.exists():
+        return enhanced_graph_path
+    return graph_dir / "patent_graph.json"
+
+
 PROCESSED_PATENTS_PATH = Path("data/processed/patents.jsonl")
 PROCESSED_CHUNKS_PATH = Path("data/processed/chunks.jsonl")
 CHROMA_INDEX_PATH = Path("data/indexes/chroma")
-GRAPH_PATH = Path("data/graph/patent_graph.json")
+GRAPH_PATH = _resolve_graph_path(Path("data/graph"))
 
 
 class PatentListItem(BaseModel):

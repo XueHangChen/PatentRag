@@ -18,6 +18,8 @@ AgentToolName = Literal[
     "graph_rag_answer",
 ]
 AgentStepStatus = Literal["success", "skipped", "error"]
+PlannerMode = Literal["rule", "rule_only", "llm", "hybrid"]
+AgentNodeStatus = Literal["success", "skipped", "error"]
 
 
 class AgentPlannedStep(BaseModel):
@@ -44,6 +46,16 @@ class AgentToolStep(BaseModel):
     status: AgentStepStatus = "success"
     observation: str
     output: dict[str, Any] = Field(default_factory=dict)
+
+
+class AgentNodeTrace(BaseModel):
+    """A concise Agent runtime node trace for debugging and interviews."""
+
+    node_name: str
+    status: AgentNodeStatus
+    details: dict[str, Any] = Field(default_factory=dict)
+    latency_ms: float = Field(default=0.0, ge=0)
+    error: str | None = None
 
 
 class PatentSearchToolResult(BaseModel):
@@ -98,6 +110,10 @@ class AgentRunResult(BaseModel):
     steps: list[AgentToolStep] = Field(default_factory=list)
     sources: list[RagSource] = Field(default_factory=list)
     graph_sources: list[RagGraphSource] = Field(default_factory=list)
+    planner_mode: PlannerMode = "rule"
+    node_trace: list[AgentNodeTrace] = Field(default_factory=list)
+    graph_state: dict[str, Any] = Field(default_factory=dict)
+    checkpoint_id: str | None = None
 
     @classmethod
     def from_rag_answer(
@@ -111,6 +127,10 @@ class AgentRunResult(BaseModel):
         plan: AgentPlan,
         steps: list[AgentToolStep],
         rag_answer: RagAnswer,
+        planner_mode: PlannerMode = "rule",
+        node_trace: list[AgentNodeTrace] | None = None,
+        graph_state: dict[str, Any] | None = None,
+        checkpoint_id: str | None = None,
     ) -> AgentRunResult:
         """Build an Agent result from the final GraphRAG answer."""
 
@@ -125,4 +145,8 @@ class AgentRunResult(BaseModel):
             steps=steps,
             sources=rag_answer.sources,
             graph_sources=rag_answer.graph_sources,
+            planner_mode=planner_mode,
+            node_trace=node_trace or [],
+            graph_state=graph_state or {},
+            checkpoint_id=checkpoint_id,
         )

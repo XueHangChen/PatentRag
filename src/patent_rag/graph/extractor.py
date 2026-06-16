@@ -6,6 +6,7 @@ import hashlib
 import re
 from collections import Counter
 from dataclasses import dataclass, field
+from typing import Protocol
 
 from patent_rag.domain import EvidenceSpan, GraphEdge, GraphNode, PatentDocument
 
@@ -51,15 +52,25 @@ class GraphExtractionResult:
     edges: list[GraphEdge] = field(default_factory=list)
 
 
+class TechnicalGraphExtractor(Protocol):
+    """Optional technical graph extractor contract."""
+
+    def extract(self, document: PatentDocument) -> GraphExtractionResult:
+        """Extract technical graph records for one patent document."""
+
+
 def extract_graph_from_documents(
     documents: list[PatentDocument],
     *,
     keyword_limit_per_patent: int = 8,
+    technical_extractor: TechnicalGraphExtractor | None = None,
+    technical_max_patents: int | None = None,
 ) -> GraphExtractionResult:
     """Extract a first-pass knowledge graph from structured patents."""
 
     nodes_by_id: dict[str, GraphNode] = {}
     edges_by_id: dict[str, GraphEdge] = {}
+    technical_patent_count = 0
 
     for document in documents:
         metadata = document.metadata
@@ -129,6 +140,15 @@ def extract_graph_from_documents(
             keyword_node = _entity_node("Keyword", keyword)
             _add_node(nodes_by_id, keyword_node)
             _add_edge(edges_by_id, patent_node.node_id, "MENTIONS_KEYWORD", keyword_node.node_id)
+
+        if technical_extractor is not None and (
+            technical_max_patents is None
+            or technical_max_patents <= 0
+            or technical_patent_count < technical_max_patents
+        ):
+            technical_result = technical_extractor.extract(document)
+            _merge_graph_result(nodes_by_id, edges_by_id, technical_result)
+            technical_patent_count += 1
 
     return GraphExtractionResult(
         nodes=sorted(nodes_by_id.values(), key=lambda node: node.node_id),
@@ -213,6 +233,18 @@ def _add_edge(
             target_id=target_id,
             relation=relation,
         )
+
+
+def _merge_graph_result(
+    nodes_by_id: dict[str, GraphNode],
+    edges_by_id: dict[str, GraphEdge],
+    result: GraphExtractionResult,
+) -> None:
+    for node in result.nodes:
+        _add_node(nodes_by_id, node)
+    for edge in result.edges:
+        if edge.edge_id not in edges_by_id:
+            edges_by_id[edge.edge_id] = edge
 
 
 def _title_keywords(title: str) -> list[str]:

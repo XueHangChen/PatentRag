@@ -1,7 +1,19 @@
 from pathlib import Path
 
-from patent_rag.agent import AgentPlan, AgentPlannedStep, AgentRunResult, AgentToolStep
-from patent_rag.api.main import AgentRunRequest, RagAskRequest, SearchRequest, create_app
+from patent_rag.agent import (
+    AgentNodeTrace,
+    AgentPlan,
+    AgentPlannedStep,
+    AgentRunResult,
+    AgentToolStep,
+)
+from patent_rag.api.main import (
+    AgentRunRequest,
+    RagAskRequest,
+    SearchRequest,
+    _resolve_graph_path,
+    create_app,
+)
 from patent_rag.domain import PatentDocument
 from patent_rag.graph import extract_graph_from_documents, write_graph_json
 from patent_rag.ingestion.jsonl import read_jsonl
@@ -164,6 +176,26 @@ def test_graph_stats_endpoint_returns_summary() -> None:
     assert "MENTIONS_KEYWORD" in payload["edge_relations"]
 
 
+def test_resolve_graph_path_prefers_llm_enhanced_graph(tmp_path: Path) -> None:
+    graph_dir = tmp_path / "graph"
+    graph_dir.mkdir()
+    default_graph = graph_dir / "patent_graph.json"
+    enhanced_graph = graph_dir / "patent_graph_llm_full20_fixed.json"
+    default_graph.write_text("{}", encoding="utf-8")
+    enhanced_graph.write_text("{}", encoding="utf-8")
+
+    assert _resolve_graph_path(graph_dir) == enhanced_graph
+
+
+def test_resolve_graph_path_falls_back_to_default_graph(tmp_path: Path) -> None:
+    graph_dir = tmp_path / "graph"
+    graph_dir.mkdir()
+    default_graph = graph_dir / "patent_graph.json"
+    default_graph.write_text("{}", encoding="utf-8")
+
+    assert _resolve_graph_path(graph_dir) == default_graph
+
+
 def test_graph_search_endpoint_finds_keyword_patent() -> None:
     _ensure_graph_data()
     app = create_app()
@@ -205,6 +237,16 @@ def test_agent_run_endpoint_returns_plan_and_trace(monkeypatch) -> None:
                     observation="检索到 1 条候选 chunk。",
                 )
             ],
+            planner_mode="rule_only",
+            node_trace=[
+                AgentNodeTrace(
+                    node_name="initialize",
+                    status="success",
+                    details={"query": query},
+                )
+            ],
+            graph_state={"completed_step_count": 1, "errors": 0},
+            checkpoint_id="agent-test-checkpoint",
         )
 
     monkeypatch.setattr("patent_rag.api.main.run_patent_agent", fake_run_patent_agent)
@@ -225,6 +267,10 @@ def test_agent_run_endpoint_returns_plan_and_trace(monkeypatch) -> None:
     assert payload["intent"] == "idea_analysis"
     assert payload["plan"]["steps"][0]["tool_name"] == "search_patents"
     assert payload["steps"][0]["observation"] == "检索到 1 条候选 chunk。"
+    assert payload["planner_mode"] == "rule_only"
+    assert payload["node_trace"][0]["node_name"] == "initialize"
+    assert payload["graph_state"]["completed_step_count"] == 1
+    assert payload["checkpoint_id"] == "agent-test-checkpoint"
 
 
 def _get_route_endpoint(app, path: str):

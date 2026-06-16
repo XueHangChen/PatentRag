@@ -14,8 +14,8 @@
 - 已完成：检索评测、规则 postprocess/rerank
 - 已完成：规则版知识图谱构建、图谱 API 和前端图谱探索
 - 已完成：GraphRAG 证据融合
-- 已完成：Agent 工具调用链、规则 Planner 和前端 Agent 工作台
-- 下一步：Agent 任务评测、流式输出和更细粒度技术关系抽取
+- 已完成：LangGraph Agent Runtime、规则 Planner、工具调用链和前端 Agent 工作台
+- 下一步：Agent 任务评测、流式输出、LLM 技术实体抽取和更细粒度技术关系抽取
 
 ## 项目结构
 
@@ -227,12 +227,37 @@ Agent 执行流程：
 
 ```text
 用户目标
--> 规则 Planner 判断意图
--> 生成工具调用计划
--> search_patents / graph_search / summarize_patent / graph_rag_answer
--> 记录每一步 tool trace
--> 返回 answer + plan + steps + sources + graph_sources
+-> LangGraph initialize node
+-> rule planner node
+-> optional hybrid replanner node
+-> search / summary / graph search / GraphRAG tool nodes
+-> self-check node
+-> finalize node
+-> 返回 answer + plan + tool trace + node trace + sources + graph_sources
 ```
+
+## LangGraph Agent Runtime
+
+`POST /agent/run` 现在由 LangGraph state graph 驱动。图运行时会把 typed AgentState 依次传过规则规划、可选 hybrid replanning、检索、图谱扩展、GraphRAG 回答生成、自检和最终组装节点。
+
+API 保持兼容原有 Agent 响应字段，并新增观测字段：
+
+- `planner_mode`
+- `node_trace`
+- `graph_state`
+- `checkpoint_id`
+
+LLM intent planning is optional. By default, the Agent uses the deterministic rule planner for offline reliability. To enable LLM structured planning, configure:
+
+```dotenv
+PATENT_RAG_ENABLE_LLM_PLANNER=true
+PATENT_RAG_LLM_PLANNER_MIN_CONFIDENCE=0.65
+PATENT_RAG_DASHSCOPE_API_KEY=your-dashscope-api-key
+```
+
+When enabled, the LLM planner must return validated JSON containing an intent, confidence score, rationale, and known tool steps. Invalid, low-confidence, unsafe, or unavailable LLM output falls back to the rule planner and is recorded in `node_trace`.
+
+这些字段让每次 Agent 执行都能展示规划模式、节点轨迹、图状态快照和运行级 checkpoint id，便于调试、演示和面试讲解。
 
 前端 Agent 工作台会展示：
 
@@ -240,6 +265,7 @@ Agent 执行流程：
 intent 识别结果
 plan 工具调用计划
 tool trace 执行过程
+LangGraph node trace
 最终回答
 原文证据和图谱证据
 ```
@@ -273,6 +299,33 @@ python scripts\build_graph.py
 ```text
 data/graph/patent_graph.json
 ```
+
+可选 LLM technical graph extraction：
+
+默认图谱构建仍然是规则版、离线可运行：
+
+```powershell
+python scripts\build_graph.py
+```
+
+如果需要更细粒度的技术语义图谱，可以启用可选 LLM 技术图谱抽取，为专利补充带原文证据的技术语义节点，例如 `Problem`、`Component`、`Solution`、`Effect` 和 `TechnicalField`。
+
+示例环境配置：
+
+```dotenv
+PATENT_RAG_DASHSCOPE_API_KEY=your-dashscope-api-key
+PATENT_RAG_ENABLE_LLM_GRAPH_EXTRACTION=true
+PATENT_RAG_LLM_GRAPH_MIN_CONFIDENCE=0.65
+PATENT_RAG_LLM_GRAPH_MAX_PATENTS=3
+```
+
+命令行示例：
+
+```powershell
+python scripts\build_graph.py --llm-technical --llm-graph-max-patents 3
+```
+
+当 LLM 输出无效、低置信度、不受支持或服务不可用时，对应结果会被跳过，规则图谱抽取仍会继续完成。
 
 查看图谱统计和关键词关联专利：
 

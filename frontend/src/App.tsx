@@ -1,20 +1,26 @@
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import type { FormEvent } from "react";
 
 import {
-  AgentRunResult,
   askPatentRag,
-  getHealth,
   getGraphStats,
-  GraphKeywordMatch,
-  GraphStats,
+  getHealth,
   listPatents,
-  PatentListItem,
-  RagAnswer,
   runPatentAgent,
-  SearchHit,
   searchGraph,
   searchPatents
 } from "./api/client";
+import type {
+  AgentRunResult,
+  GraphKeywordMatch,
+  GraphStats,
+  PatentListItem,
+  RagAnswer,
+  RagGraphSource,
+  RagSource,
+  SearchHit
+} from "./api/client";
+import { buildTechnicalEvidenceGroups, formatEvidenceScore } from "./evidence";
 
 type ApiStatus = "checking" | "ok" | "offline";
 type LoadingState = "idle" | "loading" | "error";
@@ -26,6 +32,97 @@ const intentLabels: Record<AgentRunResult["intent"], string> = {
   idea_analysis: "创意分析"
 };
 
+function formatTraceCount(value: unknown): number | string {
+  return typeof value === "number" || typeof value === "string" ? value : 0;
+}
+
+function renderChipGroup(label: string, values: string[]) {
+  if (values.length === 0) {
+    return null;
+  }
+
+  return (
+    <div className="evidence-group" key={label}>
+      <span className="evidence-group-label">{label}</span>
+      <div className="keyword-row evidence-chip-row">
+        {values.map((value, index) => (
+          <span key={`${label}-${value}-${index}`}>{value}</span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function renderTextSourceCard(source: RagSource) {
+  return (
+    <article className="source-item" key={source.source_id}>
+      <div className="result-title-row">
+        <h3>
+          [{source.source_id}] {source.title}
+        </h3>
+        <span>{formatEvidenceScore(source.score)}</span>
+      </div>
+      <div className="result-meta">
+        <span>{source.patent_id}</span>
+        <span>{source.section}</span>
+        {source.claim_number !== null ? <span>权利要求 {source.claim_number}</span> : null}
+      </div>
+      <p>{source.snippet}</p>
+    </article>
+  );
+}
+
+function renderSearchHit(hit: SearchHit) {
+  return (
+    <article className="result-item" key={hit.chunk_id}>
+      <div className="result-title-row">
+        <h3>{hit.title}</h3>
+        <span>{formatEvidenceScore(hit.score)}</span>
+      </div>
+      <div className="result-meta">
+        <span>{hit.patent_id}</span>
+        <span>{hit.section}</span>
+        {hit.claim_number !== null ? <span>权利要求 {hit.claim_number}</span> : null}
+      </div>
+      <p>{hit.snippet}</p>
+    </article>
+  );
+}
+
+function renderGraphEvidenceCard(source: RagGraphSource) {
+  const technicalGroups = buildTechnicalEvidenceGroups(source);
+
+  return (
+    <article className="source-item graph-source-item" key={source.source_id}>
+      <div className="result-title-row">
+        <h3>
+          [{source.source_id}] {source.title}
+        </h3>
+        <span>{formatEvidenceScore(source.score)}</span>
+      </div>
+      <div className="result-meta">
+        <span>{source.patent_id}</span>
+        <span>{source.keywords.length} 个关键词</span>
+        <span>{source.supporting_chunk_ids.length} 个支撑片段</span>
+        <span>{source.claim_numbers.length} 项权利要求</span>
+      </div>
+      {source.relation_summary ? <p>{source.relation_summary}</p> : null}
+      {technicalGroups.length > 0 ? (
+        <div className="evidence-groups">
+          {technicalGroups.map((group) => renderChipGroup(group.label, group.values))}
+        </div>
+      ) : null}
+      {renderChipGroup("命中词", source.matched_terms)}
+      {source.supporting_chunk_ids.length > 0 ? (
+        <div className="supporting-chunks">
+          <span>支撑片段</span>
+          <code>{source.supporting_chunk_ids.join(" / ")}</code>
+        </div>
+      ) : null}
+    </article>
+  );
+}
+
 export default function App() {
   const [apiStatus, setApiStatus] = useState<ApiStatus>("checking");
   const [patents, setPatents] = useState<PatentListItem[]>([]);
@@ -35,7 +132,7 @@ export default function App() {
   const [hits, setHits] = useState<SearchHit[]>([]);
   const [message, setMessage] = useState("");
   const [ragState, setRagState] = useState<LoadingState>("idle");
-  const [ragQuestion, setRagQuestion] = useState("低温样本运输时如何避免容器碰撞？");
+  const [ragQuestion, setRagQuestion] = useState("低温样本运输时如何避免容器磕碰？");
   const [ragAnswer, setRagAnswer] = useState<RagAnswer | null>(null);
   const [ragMessage, setRagMessage] = useState("");
   const [graphRagEnabled, setGraphRagEnabled] = useState(true);
@@ -266,8 +363,16 @@ export default function App() {
               <article>
                 <span>证据</span>
                 <strong>
-                  {agentResult.sources.length}/{agentResult.graph_sources.length}
+                  {agentResult.sources.length} 原文 / {agentResult.graph_sources.length} 图谱
                 </strong>
+              </article>
+              <article>
+                <span>Planner</span>
+                <strong>{agentResult.planner_mode ?? "rule"}</strong>
+              </article>
+              <article>
+                <span>Checkpoint</span>
+                <strong>{agentResult.checkpoint_id ?? "local-run"}</strong>
               </article>
             </div>
 
@@ -307,46 +412,45 @@ export default function App() {
                   ))}
                 </div>
               </section>
+
+              {agentResult.node_trace && agentResult.node_trace.length > 0 ? (
+                <section>
+                  <h3>LangGraph</h3>
+                  <div className="agent-step-list">
+                    {agentResult.node_trace.map((trace, index) => (
+                      <article className="agent-step" key={`${trace.node_name}-${index}`}>
+                        <div className="result-title-row">
+                          <h4>{trace.node_name}</h4>
+                          <span>{trace.status}</span>
+                        </div>
+                        <p>
+                          {formatTraceCount(trace.details.completed_step_count)} completed /{" "}
+                          {formatTraceCount(trace.details.pending_step_count)} pending
+                        </p>
+                        {trace.error ? <p>{trace.error}</p> : null}
+                      </article>
+                    ))}
+                  </div>
+                </section>
+              ) : null}
             </div>
 
             {agentResult.sources.length > 0 ? (
-              <div className="source-list">
-                {agentResult.sources.slice(0, 3).map((source) => (
-                  <article className="source-item" key={source.source_id}>
-                    <div className="result-title-row">
-                      <h3>
-                        [{source.source_id}] {source.title}
-                      </h3>
-                      <span>{source.score.toFixed(2)}</span>
-                    </div>
-                    <div className="result-meta">
-                      <span>{source.patent_id}</span>
-                      <span>{source.section}</span>
-                    </div>
-                    <p>{source.snippet}</p>
-                  </article>
-                ))}
-              </div>
+              <section className="evidence-section">
+                <h3>原文证据</h3>
+                <div className="source-list">
+                  {agentResult.sources.slice(0, 3).map((source) => renderTextSourceCard(source))}
+                </div>
+              </section>
             ) : null}
 
             {agentResult.graph_sources.length > 0 ? (
-              <div className="source-list">
-                {agentResult.graph_sources.slice(0, 3).map((source) => (
-                  <article className="source-item graph-source-item" key={source.source_id}>
-                    <div className="result-title-row">
-                      <h3>
-                        [{source.source_id}] {source.title}
-                      </h3>
-                      <span>{source.score.toFixed(2)}</span>
-                    </div>
-                    <div className="result-meta">
-                      <span>{source.patent_id}</span>
-                      <span>{source.keywords.length} 个关键词</span>
-                    </div>
-                    <p>{source.relation_summary}</p>
-                  </article>
-                ))}
-              </div>
+              <section className="evidence-section">
+                <h3>图谱证据</h3>
+                <div className="source-list agent-graph-source-list">
+                  {agentResult.graph_sources.slice(0, 3).map((source) => renderGraphEvidenceCard(source))}
+                </div>
+              </section>
             ) : null}
           </div>
         ) : null}
@@ -457,50 +561,23 @@ export default function App() {
               <h3>回答</h3>
               <p>{ragAnswer.answer}</p>
             </article>
-            <div className="source-list">
-              {ragAnswer.sources.map((source) => (
-                <article className="source-item" key={source.source_id}>
-                  <div className="result-title-row">
-                    <h3>
-                      [{source.source_id}] {source.title}
-                    </h3>
-                    <span>{source.score.toFixed(2)}</span>
-                  </div>
-                  <div className="result-meta">
-                    <span>{source.patent_id}</span>
-                    <span>{source.section}</span>
-                    {source.claim_number ? <span>权利要求 {source.claim_number}</span> : null}
-                  </div>
-                  <p>{source.snippet}</p>
-                </article>
-              ))}
-            </div>
+
+            {ragAnswer.sources.length > 0 ? (
+              <section className="evidence-section">
+                <h3>原文证据</h3>
+                <div className="source-list">
+                  {ragAnswer.sources.map((source) => renderTextSourceCard(source))}
+                </div>
+              </section>
+            ) : null}
+
             {ragAnswer.graph_sources.length > 0 ? (
-              <div className="source-list graph-rag-source-list">
-                {ragAnswer.graph_sources.map((source) => (
-                  <article className="source-item graph-source-item" key={source.source_id}>
-                    <div className="result-title-row">
-                      <h3>
-                        [{source.source_id}] {source.title}
-                      </h3>
-                      <span>{source.score.toFixed(2)}</span>
-                    </div>
-                    <div className="result-meta">
-                      <span>{source.patent_id}</span>
-                      <span>{source.keywords.length} 个关键词</span>
-                      <span>{source.claim_numbers.length} 项权利要求</span>
-                    </div>
-                    <p>{source.relation_summary}</p>
-                    {source.matched_terms.length > 0 ? (
-                      <div className="keyword-row">
-                        {source.matched_terms.map((term) => (
-                          <span key={term}>{term}</span>
-                        ))}
-                      </div>
-                    ) : null}
-                  </article>
-                ))}
-              </div>
+              <section className="evidence-section">
+                <h3>图谱证据</h3>
+                <div className="source-list graph-rag-source-list">
+                  {ragAnswer.graph_sources.map((source) => renderGraphEvidenceCard(source))}
+                </div>
+              </section>
             ) : null}
           </div>
         ) : null}
@@ -535,22 +612,7 @@ export default function App() {
           {message ? <p className="notice">{message}</p> : null}
           {searchState === "error" ? <p className="notice error">后端检索接口暂不可用</p> : null}
 
-          <div className="result-list">
-            {hits.map((hit) => (
-              <article className="result-item" key={hit.chunk_id}>
-                <div className="result-title-row">
-                  <h3>{hit.title}</h3>
-                  <span>{hit.score.toFixed(2)}</span>
-                </div>
-                <div className="result-meta">
-                  <span>{hit.patent_id}</span>
-                  <span>{hit.section}</span>
-                  {hit.claim_number ? <span>权利要求 {hit.claim_number}</span> : null}
-                </div>
-                <p>{hit.snippet}</p>
-              </article>
-            ))}
-          </div>
+          <div className="result-list">{hits.map((hit) => renderSearchHit(hit))}</div>
         </section>
 
         <aside className="panel patent-panel" aria-label="专利列表">

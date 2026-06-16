@@ -1,0 +1,911 @@
+{
+  "created_at": "2026-06-15T21:57:43",
+  "case_count": 6,
+  "retrieval_mode": "keyword",
+  "top_k": 5,
+  "graph_top_k": 5,
+  "graph_path": "data\\graph\\patent_graph_llm_full20_fixed.json",
+  "answer_generation": false,
+  "expected_graph_hit_rate": 1.0,
+  "expected_any_hit_rate": 1.0,
+  "graph_citation_rate": 0.0,
+  "source_citation_rate": 0.0,
+  "average_answer_length": 0.0,
+  "cases": [
+    {
+      "case_id": "component_cleaning_devices",
+      "category": "component",
+      "question": "哪些专利使用清洗箱、喷嘴或雾化器？它们分别解决了什么技术问题？",
+      "expected_patent_ids": [
+        "CN207641928U",
+        "CN209489954U"
+      ],
+      "source_patent_ids": [
+        "CN207641928U",
+        "CN209489954U",
+        "CN207494109U"
+      ],
+      "graph_patent_ids": [
+        "CN207641928U",
+        "CN209489954U",
+        "CN207494109U",
+        "CN110237372A",
+        "CN208612892U"
+      ],
+      "expected_in_sources": [
+        "CN207641928U",
+        "CN209489954U"
+      ],
+      "expected_in_graph_sources": [
+        "CN207641928U",
+        "CN209489954U"
+      ],
+      "missing_expected_patents": [],
+      "graph_source_count": 5,
+      "source_count": 5,
+      "has_source_citation": false,
+      "has_graph_citation": false,
+      "answer_length": 0,
+      "answer_preview": "",
+      "graph_evidence_preview": [
+        {
+          "source_id": "G1",
+          "patent_id": "CN207641928U",
+          "title": "一种眼科手术器械清洗烘干装置",
+          "technical_fields": [
+            "医疗器械技术领域"
+          ],
+          "problems": [
+            "眼科手术器械清洗和烘干分别进行"
+          ],
+          "components": [
+            "箱体",
+            "转动轴",
+            "清洗箱",
+            "加热装置",
+            "喷嘴",
+            "底盘"
+          ],
+          "solutions": [],
+          "effects": [],
+          "relation_summary": "Keywords: 器械清洗烘干装置, 眼科手术器械清洗烘干装置, 底盘上方经支架, 上方经支架, 洗烘干装置, 械清洗烘干装置, 加热装置, 装置; Applicants: 南阳医学高等专科学校第一附属医院; Inventors: 刁婷婷; IPC: F26B21/00, B08B3/02; Sections: 背景技术, 实用新型内容, 具体实施方式, 附图说明, 技术领域; Claim count: 7; Technical fields: 医疗器械技术领域; Technical problems: 眼科手术器械清洗和烘干分别进行; Key components: 箱体, 转动轴, 清洗..."
+        },
+        {
+          "source_id": "G2",
+          "patent_id": "CN209489954U",
+          "title": "一种超声雾化窗纱清洗装置",
+          "technical_fields": [
+            "窗纱清洗工具领域"
+          ],
+          "problems": [
+            "高压水冲法导致污水外流污染环境",
+            "传统清洁纱窗方式工作量大、易破网、不易清洁干净"
+          ],
+          "components": [
+            "超声雾化装置",
+            "清洗头",
+            "吸尘器主机",
+            "雾化器"
+          ],
+          "solutions": [],
+          "effects": [
+            "避免污水外流"
+          ],
+          "relation_summary": "Keywords: 装置, 超声雾化窗纱清洗装置, 超声波雾化器, 雾化窗纱清洗装置, 洗头后部设置雾化器, 雾化器, 洗装置, 泵和超声雾化装置; Applicants: 南阳医学高等专科学校第一附属医院; Inventors: 张俊鹏; IPC: A47L9/00, A47L4/00, A47L9/06, A47L7/00; Sections: 附图说明, 实用新型内容, 技术领域, 背景技术, 具体实施方式; Claim count: 6; Technical fields: 窗纱清洗工具领域; Technical problems: 高压水冲法导致污水外流污染环境, 传统清洁纱窗方式工..."
+        },
+        {
+          "source_id": "G3",
+          "patent_id": "CN207494109U",
+          "title": "医用奶嘴专用清洗框",
+          "technical_fields": [
+            "奶嘴清洗装置"
+          ],
+          "problems": [
+            "奶嘴装载量少",
+            "奶嘴易碰触设备侧壁",
+            "奶嘴清洗效果差"
+          ],
+          "components": [
+            "方形格栅",
+            "内框架",
+            "清洗框本体"
+          ],
+          "solutions": [
+            "上下间隔扣放的上框和下框结构"
+          ],
+          "effects": [],
+          "relation_summary": "Keywords: 奶嘴专用清洗框, 所述清洗框, 机或高压灭绝设备, 清洗框, 医用奶嘴专用清洗框, 用清洗框, 包括清洗框, 奶嘴和奶瓶盖清洗框; Applicants: 黄河三门峡医院; Inventors: 刘学芳乔彦博; IPC: B08B13/00, B08B3/02; Sections: 背景技术, 发明内容, 具体实施方式, 附图说明, 技术领域; Claim count: 4; Technical fields: 奶嘴清洗装置; Technical problems: 奶嘴装载量少, 奶嘴易碰触设备侧壁, 奶嘴清洗效果差; Key components: 方形格栅, 内框架,..."
+        },
+        {
+          "source_id": "G4",
+          "patent_id": "CN110237372A",
+          "title": "小儿智能雾化器",
+          "technical_fields": [
+            "儿科医疗器械领域"
+          ],
+          "problems": [
+            "小儿不能很好配合雾化治疗导致疾病控制不佳"
+          ],
+          "components": [
+            "雾化组件",
+            "温度调控组件",
+            "运算系统",
+            "视频采集传感器",
+            "框架系统",
+            "通信接口"
+          ],
+          "solutions": [],
+          "effects": [],
+          "relation_summary": "Keywords: 小儿智能雾化器, 超声波雾化器, 域装置, 压缩式雾化器, 微网雾化器, 不管采用何种雾化器, 目前市场上雾化器, 雾化器; Applicants: 南阳医学高等专科学校第一附属医院; Inventors: 郑华月; IPC: A61M11/00, G06N3/04, G06K9/62; Sections: 发明内容, 附图说明, 技术领域, 背景技术; Claim count: 7; Technical fields: 儿科医疗器械领域; Technical problems: 小儿不能很好配合雾化治疗导致疾病控制不佳; Key components: 雾化组件, 温度调..."
+        },
+        {
+          "source_id": "G5",
+          "patent_id": "CN208612892U",
+          "title": "一种消化内科胃管插管辅助装置",
+          "technical_fields": [
+            "医疗器械用具技术领域"
+          ],
+          "problems": [
+            "现有涂管器使用不便且难以清洗",
+            "石蜡油涂抹操作繁琐、不均匀"
+          ],
+          "components": [
+            "操作台",
+            "石蜡油涂抹机构",
+            "行走轮",
+            "夹持机构",
+            "机架"
+          ],
+          "solutions": [],
+          "effects": [],
+          "relation_summary": "Keywords: 科胃管插管辅助装置, 内科胃管插管辅助装置, 助装置, 装置结构简单, 装置, 插管辅助装置, 胃管插管辅助装置, 消化内科胃管插管辅助装置; Applicants: 南阳医学高等专科学校第一附属医院; Inventors: 程明菲; IPC: B05C1/02, B05C13/02; Sections: 背景技术, 附图说明, 技术领域, 实用新型内容, 具体实施方式; Claim count: 5; Technical fields: 医疗器械用具技术领域; Technical problems: 现有涂管器使用不便且难以清洗, 石蜡油涂抹操作繁琐、不均匀; Key c..."
+        }
+      ]
+    },
+    {
+      "case_id": "problem_nursing_support",
+      "category": "problem",
+      "question": "哪些专利解决了护理床翻身、身体支撑或长期受压相关问题？",
+      "expected_patent_ids": [
+        "CN107049658A",
+        "CN208193238U"
+      ],
+      "source_patent_ids": [
+        "CN107049658A",
+        "CN107242942A",
+        "CN109730872A",
+        "CN209316357U"
+      ],
+      "graph_patent_ids": [
+        "CN107049658A",
+        "CN109730872A",
+        "CN107242942A",
+        "CN209316357U",
+        "CN208193238U"
+      ],
+      "expected_in_sources": [
+        "CN107049658A"
+      ],
+      "expected_in_graph_sources": [
+        "CN107049658A",
+        "CN208193238U"
+      ],
+      "missing_expected_patents": [],
+      "graph_source_count": 5,
+      "source_count": 5,
+      "has_source_citation": false,
+      "has_graph_citation": false,
+      "answer_length": 0,
+      "answer_preview": "",
+      "graph_evidence_preview": [
+        {
+          "source_id": "G1",
+          "patent_id": "CN107049658A",
+          "title": "一种心血管外科术后专用护理床",
+          "technical_fields": [
+            "心血管外科护理技术领域"
+          ],
+          "problems": [
+            "病人身体长期受压造成局部缺氧、血管栓塞、组织坏死腐脱"
+          ],
+          "components": [
+            "胸部保护机构",
+            "第二MEMS传感器模块",
+            "第一MEMS传感器模块",
+            "控制器",
+            "联动机构",
+            "臀部转动机构"
+          ],
+          "solutions": [],
+          "effects": [],
+          "relation_summary": "Keywords: 机支架, 科术后专用护理床, 护理病床, 专用护理床, 外科术后专用护理床, 外科手术康复护理床, 术后专用护理床, 心血管外科术后专用护理床; Applicants: 南阳医学高等专科学校第一附属医院; Inventors: 赵璐洋; IPC: A61G7/057, A61G7/015, A61G7/05; Sections: 技术领域, 发明内容, 背景技术, 附图说明, 具体实施方式; Claim count: 10; Technical fields: 心血管外科护理技术领域; Technical problems: 病人身体长期受压造成局部缺氧、血管栓塞、组织坏死..."
+        },
+        {
+          "source_id": "G2",
+          "patent_id": "CN109730872A",
+          "title": "一种新生儿科用保健护理装置",
+          "technical_fields": [
+            "婴幼儿护理装置技术领域"
+          ],
+          "problems": [
+            "易造成婴幼儿不适",
+            "功能单一",
+            "婴幼儿发育生长健康标准测量不易操作"
+          ],
+          "components": [
+            "控制器",
+            "记录台",
+            "按摩机构"
+          ],
+          "solutions": [],
+          "effects": [],
+          "relation_summary": "Keywords: 用保健护理装置, 新生儿科用保健护理装置, 健护理装置, 及婴幼儿护理装置, 科用保健护理装置, 装置; Applicants: 南阳医学高等专科学校第一附属医院; Inventors: 陈恒; IPC: A61H15/00, A61H39/04, A61B5/107, A61G12/00; Sections: 技术领域, 附图说明, 具体实施方式, 发明内容, 背景技术; Claim count: 9; Technical fields: 婴幼儿护理装置技术领域; Technical problems: 易造成婴幼儿不适, 功能单一, 婴幼儿发育生长健康标准测量不易操作;..."
+        },
+        {
+          "source_id": "G3",
+          "patent_id": "CN107242942A",
+          "title": "一种神经外科术后护理康复装置",
+          "technical_fields": [
+            "神经外科康复技术领域"
+          ],
+          "problems": [
+            "病人在康复过程中不能自由转动身体",
+            "病人不能自由移动"
+          ],
+          "components": [
+            "控制器",
+            "靠背机构",
+            "电动升降杆",
+            "第一MEMS传感器模块",
+            "平台"
+          ],
+          "solutions": [],
+          "effects": [],
+          "relation_summary": "Keywords: 前轮支架, 装置, 置前轮支架, 后护理康复装置, 称设置前轮支架, 术后护理康复装置, 理康复装置, 神经外科术后护理康复装置; Applicants: 南阳医学高等专科学校第一附属医院; Inventors: 张小燕; IPC: A61G5/10, A61G5/00; Sections: 附图说明, 发明内容, 技术领域, 具体实施方式, 背景技术; Claim count: 8; Technical fields: 神经外科康复技术领域; Technical problems: 病人在康复过程中不能自由转动身体, 病人不能自由移动; Key components: 控..."
+        },
+        {
+          "source_id": "G4",
+          "patent_id": "CN209316357U",
+          "title": "一种骨科手术辅助架",
+          "technical_fields": [
+            "医疗器械技术领域"
+          ],
+          "problems": [
+            "不能有效对患者腿部进行支撑固定"
+          ],
+          "components": [
+            "操作板",
+            "底板",
+            "座板",
+            "升降板",
+            "支撑块",
+            "座板伸缩杆"
+          ],
+          "solutions": [],
+          "effects": [],
+          "relation_summary": "Keywords: 有骨科手术辅助架, 骨科手术辅助架在使, 有骨科手术辅助架不能有效, 涉及一种辅助架, 骨科手术辅助架; Applicants: 南阳医学高等专科学校第一附属医院; Inventors: 王红辉; IPC: A61G12/00; Sections: 附图说明, 实用新型内容, 具体实施方式, 背景技术, 技术领域; Claim count: 9; Technical fields: 医疗器械技术领域; Technical problems: 不能有效对患者腿部进行支撑固定; Key components: 操作板, 底板, 座板, 升降板, 支撑块, 座板伸缩杆"
+        },
+        {
+          "source_id": "G5",
+          "patent_id": "CN208193238U",
+          "title": "一种医疗护理用多功能床旁桌",
+          "technical_fields": [
+            "医疗护理辅助装置领域"
+          ],
+          "problems": [
+            "住院病区加床后每床仪器设备放置和生活物品放置矛盾",
+            "病床医疗设备摆放预留面积缺失或锐减"
+          ],
+          "components": [
+            "四层钢架",
+            "面板",
+            "立杆",
+            "遮挡铁网"
+          ],
+          "solutions": [
+            "医疗护理用多功能床旁桌"
+          ],
+          "effects": [],
+          "relation_summary": "Keywords: 使用监护仪等仪器, 医疗护理辅助装置, 仪器, 医疗护理用多功能床旁桌, 属于医疗护理辅助装置, 可供病人所需仪器, 相比仪器, 保证了仪器; Applicants: 会理县人民医院; Inventors: 王代坤; IPC: A61G7/05, A61B50/15; Sections: 实用新型内容, 技术领域, 背景技术, 具体实施方式, 附图说明; Claim count: 10; Technical fields: 医疗护理辅助装置领域; Technical problems: 住院病区加床后每床仪器设备放置和生活物品放置矛盾, 病床医疗设备摆放预留面积缺失或锐减;..."
+        }
+      ]
+    },
+    {
+      "case_id": "automation_sensors",
+      "category": "solution",
+      "question": "有哪些专利通过MEMS传感器模块、控制器或自动化机构改善护理或康复效果？",
+      "expected_patent_ids": [
+        "CN107242942A",
+        "CN107049658A",
+        "CN109730872A"
+      ],
+      "source_patent_ids": [
+        "CN107242942A",
+        "CN107049658A",
+        "CN106859869A"
+      ],
+      "graph_patent_ids": [
+        "CN107242942A",
+        "CN107049658A",
+        "CN106859869A",
+        "CN109730872A",
+        "CN208193238U"
+      ],
+      "expected_in_sources": [
+        "CN107242942A",
+        "CN107049658A"
+      ],
+      "expected_in_graph_sources": [
+        "CN107242942A",
+        "CN107049658A",
+        "CN109730872A"
+      ],
+      "missing_expected_patents": [],
+      "graph_source_count": 5,
+      "source_count": 5,
+      "has_source_citation": false,
+      "has_graph_citation": false,
+      "answer_length": 0,
+      "answer_preview": "",
+      "graph_evidence_preview": [
+        {
+          "source_id": "G1",
+          "patent_id": "CN107242942A",
+          "title": "一种神经外科术后护理康复装置",
+          "technical_fields": [
+            "神经外科康复技术领域"
+          ],
+          "problems": [
+            "病人在康复过程中不能自由转动身体",
+            "病人不能自由移动"
+          ],
+          "components": [
+            "控制器",
+            "靠背机构",
+            "电动升降杆",
+            "第一MEMS传感器模块",
+            "平台"
+          ],
+          "solutions": [],
+          "effects": [],
+          "relation_summary": "Keywords: 前轮支架, 装置, 置前轮支架, 后护理康复装置, 称设置前轮支架, 术后护理康复装置, 理康复装置, 神经外科术后护理康复装置; Applicants: 南阳医学高等专科学校第一附属医院; Inventors: 张小燕; IPC: A61G5/10, A61G5/00; Sections: 附图说明, 发明内容, 技术领域, 具体实施方式, 背景技术; Claim count: 8; Technical fields: 神经外科康复技术领域; Technical problems: 病人在康复过程中不能自由转动身体, 病人不能自由移动; Key components: 控..."
+        },
+        {
+          "source_id": "G2",
+          "patent_id": "CN107049658A",
+          "title": "一种心血管外科术后专用护理床",
+          "technical_fields": [
+            "心血管外科护理技术领域"
+          ],
+          "problems": [
+            "病人身体长期受压造成局部缺氧、血管栓塞、组织坏死腐脱"
+          ],
+          "components": [
+            "胸部保护机构",
+            "第二MEMS传感器模块",
+            "第一MEMS传感器模块",
+            "控制器",
+            "联动机构",
+            "臀部转动机构"
+          ],
+          "solutions": [],
+          "effects": [],
+          "relation_summary": "Keywords: 机支架, 科术后专用护理床, 护理病床, 专用护理床, 外科术后专用护理床, 外科手术康复护理床, 术后专用护理床, 心血管外科术后专用护理床; Applicants: 南阳医学高等专科学校第一附属医院; Inventors: 赵璐洋; IPC: A61G7/057, A61G7/015, A61G7/05; Sections: 技术领域, 发明内容, 背景技术, 附图说明, 具体实施方式; Claim count: 10; Technical fields: 心血管外科护理技术领域; Technical problems: 病人身体长期受压造成局部缺氧、血管栓塞、组织坏死..."
+        },
+        {
+          "source_id": "G3",
+          "patent_id": "CN106859869A",
+          "title": "一种肿瘤内科抢救车",
+          "technical_fields": [
+            "医疗器械技术领域"
+          ],
+          "problems": [
+            "地震灾区手术室建设慢、隔离卫生不达标、设备不足",
+            "山区医疗设备缺乏导致疾病无法诊断治疗",
+            "转运危重患者时搬动导致病情加重或死亡"
+          ],
+          "components": [
+            "微创超低温冷冻消融肿瘤的医疗设备",
+            "弹性支撑机构",
+            "X射线检测模块"
+          ],
+          "solutions": [
+            "将X光机和手术室集成于活动式医疗仓"
+          ],
+          "effects": [],
+          "relation_summary": "Keywords: 医疗设备, 卫生以及检查设备, 术设备, 型支架, 抢救车, 肿瘤内科抢救车, 温冷冻消融肿瘤的医疗设备, 超检查等设备; Applicants: 南阳医学高等专科学校第一附属医院; Inventors: 程鹏; IPC: E04H3/08, A61G3/00; Sections: 技术领域, 发明内容, 背景技术, 具体实施方式, 附图说明; Claim count: 10; Technical fields: 医疗器械技术领域; Technical problems: 地震灾区手术室建设慢、隔离卫生不达标、设备不足, 山区医疗设备缺乏导致疾病无法诊断治疗, 转运危重患者..."
+        },
+        {
+          "source_id": "G4",
+          "patent_id": "CN109730872A",
+          "title": "一种新生儿科用保健护理装置",
+          "technical_fields": [
+            "婴幼儿护理装置技术领域"
+          ],
+          "problems": [
+            "易造成婴幼儿不适",
+            "功能单一",
+            "婴幼儿发育生长健康标准测量不易操作"
+          ],
+          "components": [
+            "控制器",
+            "记录台",
+            "按摩机构"
+          ],
+          "solutions": [],
+          "effects": [],
+          "relation_summary": "Keywords: 用保健护理装置, 新生儿科用保健护理装置, 健护理装置, 及婴幼儿护理装置, 科用保健护理装置, 装置; Applicants: 南阳医学高等专科学校第一附属医院; Inventors: 陈恒; IPC: A61H15/00, A61H39/04, A61B5/107, A61G12/00; Sections: 技术领域, 附图说明, 具体实施方式, 发明内容, 背景技术; Claim count: 9; Technical fields: 婴幼儿护理装置技术领域; Technical problems: 易造成婴幼儿不适, 功能单一, 婴幼儿发育生长健康标准测量不易操作;..."
+        },
+        {
+          "source_id": "G5",
+          "patent_id": "CN208193238U",
+          "title": "一种医疗护理用多功能床旁桌",
+          "technical_fields": [
+            "医疗护理辅助装置领域"
+          ],
+          "problems": [
+            "住院病区加床后每床仪器设备放置和生活物品放置矛盾",
+            "病床医疗设备摆放预留面积缺失或锐减"
+          ],
+          "components": [
+            "四层钢架",
+            "面板",
+            "立杆",
+            "遮挡铁网"
+          ],
+          "solutions": [
+            "医疗护理用多功能床旁桌"
+          ],
+          "effects": [],
+          "relation_summary": "Keywords: 使用监护仪等仪器, 医疗护理辅助装置, 仪器, 医疗护理用多功能床旁桌, 属于医疗护理辅助装置, 可供病人所需仪器, 相比仪器, 保证了仪器; Applicants: 会理县人民医院; Inventors: 王代坤; IPC: A61G7/05, A61B50/15; Sections: 实用新型内容, 技术领域, 背景技术, 具体实施方式, 附图说明; Claim count: 10; Technical fields: 医疗护理辅助装置领域; Technical problems: 住院病区加床后每床仪器设备放置和生活物品放置矛盾, 病床医疗设备摆放预留面积缺失或锐减;..."
+        }
+      ]
+    },
+    {
+      "case_id": "technical_field_ophthalmology",
+      "category": "technical_field",
+      "question": "哪些专利属于眼科手术或眼科器械相关技术领域？它们的关键组件是什么？",
+      "expected_patent_ids": [
+        "CN207641928U",
+        "CN110236704A"
+      ],
+      "source_patent_ids": [
+        "CN207641928U",
+        "CN110236704A",
+        "CN209316357U",
+        "CN107692961A"
+      ],
+      "graph_patent_ids": [
+        "CN207641928U",
+        "CN110236704A",
+        "CN209316357U",
+        "CN107692961A",
+        "CN106859869A"
+      ],
+      "expected_in_sources": [
+        "CN207641928U",
+        "CN110236704A"
+      ],
+      "expected_in_graph_sources": [
+        "CN207641928U",
+        "CN110236704A"
+      ],
+      "missing_expected_patents": [],
+      "graph_source_count": 5,
+      "source_count": 5,
+      "has_source_citation": false,
+      "has_graph_citation": false,
+      "answer_length": 0,
+      "answer_preview": "",
+      "graph_evidence_preview": [
+        {
+          "source_id": "G1",
+          "patent_id": "CN207641928U",
+          "title": "一种眼科手术器械清洗烘干装置",
+          "technical_fields": [
+            "医疗器械技术领域"
+          ],
+          "problems": [
+            "眼科手术器械清洗和烘干分别进行"
+          ],
+          "components": [
+            "箱体",
+            "转动轴",
+            "清洗箱",
+            "加热装置",
+            "喷嘴",
+            "底盘"
+          ],
+          "solutions": [],
+          "effects": [],
+          "relation_summary": "Keywords: 器械清洗烘干装置, 眼科手术器械清洗烘干装置, 底盘上方经支架, 上方经支架, 洗烘干装置, 械清洗烘干装置, 加热装置, 装置; Applicants: 南阳医学高等专科学校第一附属医院; Inventors: 刁婷婷; IPC: F26B21/00, B08B3/02; Sections: 背景技术, 实用新型内容, 具体实施方式, 附图说明, 技术领域; Claim count: 7; Technical fields: 医疗器械技术领域; Technical problems: 眼科手术器械清洗和烘干分别进行; Key components: 箱体, 转动轴, 清洗..."
+        },
+        {
+          "source_id": "G2",
+          "patent_id": "CN110236704A",
+          "title": "一种眼科医疗手术卫生清洁装置",
+          "technical_fields": [
+            "眼科手术装置"
+          ],
+          "problems": [
+            "使用后的手术刀和未使用的手术刀容易接触产生交叉感染",
+            "现有搁手台功能简单、卫生清洁程度不高"
+          ],
+          "components": [
+            "换刀组件",
+            "一次性刀套",
+            "台体",
+            "换工具组件"
+          ],
+          "solutions": [],
+          "effects": [
+            "提高手术效率"
+          ],
+          "relation_summary": "Keywords: 术卫生清洁装置, 手术卫生清洁装置, 装置, 卫生清洁装置, 洁装置, 涉及眼科手术装置, 眼科医疗手术卫生清洁装置; Applicants: 南阳医学高等专科学校第一附属医院; Inventors: 牛卓娅; IPC: A61B90/60; Sections: 发明内容, 技术领域, 具体实施方式, 附图说明, 背景技术; Claim count: 10; Technical fields: 眼科手术装置; Technical problems: 使用后的手术刀和未使用的手术刀容易接触产生交叉感染, 现有搁手台功能简单、卫生清洁程度不高; Key components: ..."
+        },
+        {
+          "source_id": "G3",
+          "patent_id": "CN209316357U",
+          "title": "一种骨科手术辅助架",
+          "technical_fields": [
+            "医疗器械技术领域"
+          ],
+          "problems": [
+            "不能有效对患者腿部进行支撑固定"
+          ],
+          "components": [
+            "操作板",
+            "底板",
+            "座板",
+            "升降板",
+            "支撑块",
+            "座板伸缩杆"
+          ],
+          "solutions": [],
+          "effects": [],
+          "relation_summary": "Keywords: 有骨科手术辅助架, 骨科手术辅助架在使, 有骨科手术辅助架不能有效, 涉及一种辅助架, 骨科手术辅助架; Applicants: 南阳医学高等专科学校第一附属医院; Inventors: 王红辉; IPC: A61G12/00; Sections: 附图说明, 实用新型内容, 具体实施方式, 背景技术, 技术领域; Claim count: 9; Technical fields: 医疗器械技术领域; Technical problems: 不能有效对患者腿部进行支撑固定; Key components: 操作板, 底板, 座板, 升降板, 支撑块, 座板伸缩杆"
+        },
+        {
+          "source_id": "G4",
+          "patent_id": "CN107692961A",
+          "title": "一种眼科仪器用旋转台",
+          "technical_fields": [
+            "医疗器械技术领域"
+          ],
+          "problems": [],
+          "components": [],
+          "solutions": [
+            "眼科仪器用旋转台"
+          ],
+          "effects": [],
+          "relation_summary": "Keywords: 辅助装置, 眼科仪器用旋转台, 对于眼科仪器, 别是一种眼科仪器, 装置, 随着医疗仪器, 眼科仪器, 构成一套定位装置; Applicants: 南阳医学高等专科学校第一附属医院; Inventors: 刁婷婷; IPC: A61B50/24, A61B3/00; Sections: 附图说明, 技术领域, 背景技术, 具体实施方式, 发明内容; Claim count: 7; Technical fields: 医疗器械技术领域; Technical solutions: 眼科仪器用旋转台"
+        },
+        {
+          "source_id": "G5",
+          "patent_id": "CN106859869A",
+          "title": "一种肿瘤内科抢救车",
+          "technical_fields": [
+            "医疗器械技术领域"
+          ],
+          "problems": [
+            "地震灾区手术室建设慢、隔离卫生不达标、设备不足",
+            "山区医疗设备缺乏导致疾病无法诊断治疗",
+            "转运危重患者时搬动导致病情加重或死亡"
+          ],
+          "components": [
+            "微创超低温冷冻消融肿瘤的医疗设备",
+            "弹性支撑机构",
+            "X射线检测模块"
+          ],
+          "solutions": [
+            "将X光机和手术室集成于活动式医疗仓"
+          ],
+          "effects": [],
+          "relation_summary": "Keywords: 医疗设备, 卫生以及检查设备, 术设备, 型支架, 抢救车, 肿瘤内科抢救车, 温冷冻消融肿瘤的医疗设备, 超检查等设备; Applicants: 南阳医学高等专科学校第一附属医院; Inventors: 程鹏; IPC: E04H3/08, A61G3/00; Sections: 技术领域, 发明内容, 背景技术, 具体实施方式, 附图说明; Claim count: 10; Technical fields: 医疗器械技术领域; Technical problems: 地震灾区手术室建设慢、隔离卫生不达标、设备不足, 山区医疗设备缺乏导致疾病无法诊断治疗, 转运危重患者..."
+        }
+      ]
+    },
+    {
+      "case_id": "effect_cleaning_efficiency",
+      "category": "effect",
+      "question": "哪些方案提升了清洗效率、清洁效果或降低污染风险？",
+      "expected_patent_ids": [
+        "CN207641928U",
+        "CN209489954U",
+        "CN207494109U"
+      ],
+      "source_patent_ids": [
+        "CN207494109U",
+        "CN209489954U",
+        "CN108888820A"
+      ],
+      "graph_patent_ids": [
+        "CN207494109U",
+        "CN209489954U",
+        "CN108888820A",
+        "CN110236704A",
+        "CN207641928U"
+      ],
+      "expected_in_sources": [
+        "CN209489954U",
+        "CN207494109U"
+      ],
+      "expected_in_graph_sources": [
+        "CN207641928U",
+        "CN209489954U",
+        "CN207494109U"
+      ],
+      "missing_expected_patents": [],
+      "graph_source_count": 5,
+      "source_count": 5,
+      "has_source_citation": false,
+      "has_graph_citation": false,
+      "answer_length": 0,
+      "answer_preview": "",
+      "graph_evidence_preview": [
+        {
+          "source_id": "G1",
+          "patent_id": "CN207494109U",
+          "title": "医用奶嘴专用清洗框",
+          "technical_fields": [
+            "奶嘴清洗装置"
+          ],
+          "problems": [
+            "奶嘴装载量少",
+            "奶嘴易碰触设备侧壁",
+            "奶嘴清洗效果差"
+          ],
+          "components": [
+            "方形格栅",
+            "内框架",
+            "清洗框本体"
+          ],
+          "solutions": [
+            "上下间隔扣放的上框和下框结构"
+          ],
+          "effects": [],
+          "relation_summary": "Keywords: 奶嘴专用清洗框, 所述清洗框, 机或高压灭绝设备, 清洗框, 医用奶嘴专用清洗框, 用清洗框, 包括清洗框, 奶嘴和奶瓶盖清洗框; Applicants: 黄河三门峡医院; Inventors: 刘学芳乔彦博; IPC: B08B13/00, B08B3/02; Sections: 背景技术, 发明内容, 具体实施方式, 附图说明, 技术领域; Claim count: 4; Technical fields: 奶嘴清洗装置; Technical problems: 奶嘴装载量少, 奶嘴易碰触设备侧壁, 奶嘴清洗效果差; Key components: 方形格栅, 内框架,..."
+        },
+        {
+          "source_id": "G2",
+          "patent_id": "CN209489954U",
+          "title": "一种超声雾化窗纱清洗装置",
+          "technical_fields": [
+            "窗纱清洗工具领域"
+          ],
+          "problems": [
+            "高压水冲法导致污水外流污染环境",
+            "传统清洁纱窗方式工作量大、易破网、不易清洁干净"
+          ],
+          "components": [
+            "超声雾化装置",
+            "清洗头",
+            "吸尘器主机",
+            "雾化器"
+          ],
+          "solutions": [],
+          "effects": [
+            "避免污水外流"
+          ],
+          "relation_summary": "Keywords: 装置, 超声雾化窗纱清洗装置, 超声波雾化器, 雾化窗纱清洗装置, 洗头后部设置雾化器, 雾化器, 洗装置, 泵和超声雾化装置; Applicants: 南阳医学高等专科学校第一附属医院; Inventors: 张俊鹏; IPC: A47L9/00, A47L4/00, A47L9/06, A47L7/00; Sections: 附图说明, 实用新型内容, 技术领域, 背景技术, 具体实施方式; Claim count: 6; Technical fields: 窗纱清洗工具领域; Technical problems: 高压水冲法导致污水外流污染环境, 传统清洁纱窗方式工..."
+        },
+        {
+          "source_id": "G3",
+          "patent_id": "CN108888820A",
+          "title": "儿科医生用儿科负压洗胃装置",
+          "technical_fields": [
+            "医疗设备技术领域"
+          ],
+          "problems": [
+            "洗胃罐和污液罐与洗胃设备一体设计不可拆卸，不利于充分清洗"
+          ],
+          "components": [
+            "污液罐",
+            "洗胃液储存罐",
+            "底板",
+            "安装架",
+            "箱体"
+          ],
+          "solutions": [],
+          "effects": [],
+          "relation_summary": "Keywords: 儿科负压洗胃装置, 涉及医疗设备, 装置, 科负压洗胃装置, 洗胃装置, 污液罐从洗胃设备, 儿科医生用儿科负压洗胃装置, 洗胃设备; Applicants: 南阳医学高等专科学校第一附属医院; Inventors: 郑华月; IPC: A61M3/02; Sections: 背景技术, 具体实施方式, 发明内容, 附图说明, 技术领域; Claim count: 9; Technical fields: 医疗设备技术领域; Technical problems: 洗胃罐和污液罐与洗胃设备一体设计不可拆卸，不利于充分清洗; Key components: 污液罐, 洗胃液储..."
+        },
+        {
+          "source_id": "G4",
+          "patent_id": "CN110236704A",
+          "title": "一种眼科医疗手术卫生清洁装置",
+          "technical_fields": [
+            "眼科手术装置"
+          ],
+          "problems": [
+            "使用后的手术刀和未使用的手术刀容易接触产生交叉感染",
+            "现有搁手台功能简单、卫生清洁程度不高"
+          ],
+          "components": [
+            "换刀组件",
+            "一次性刀套",
+            "台体",
+            "换工具组件"
+          ],
+          "solutions": [],
+          "effects": [
+            "提高手术效率"
+          ],
+          "relation_summary": "Keywords: 术卫生清洁装置, 手术卫生清洁装置, 装置, 卫生清洁装置, 洁装置, 涉及眼科手术装置, 眼科医疗手术卫生清洁装置; Applicants: 南阳医学高等专科学校第一附属医院; Inventors: 牛卓娅; IPC: A61B90/60; Sections: 发明内容, 技术领域, 具体实施方式, 附图说明, 背景技术; Claim count: 10; Technical fields: 眼科手术装置; Technical problems: 使用后的手术刀和未使用的手术刀容易接触产生交叉感染, 现有搁手台功能简单、卫生清洁程度不高; Key components: ..."
+        },
+        {
+          "source_id": "G5",
+          "patent_id": "CN207641928U",
+          "title": "一种眼科手术器械清洗烘干装置",
+          "technical_fields": [
+            "医疗器械技术领域"
+          ],
+          "problems": [
+            "眼科手术器械清洗和烘干分别进行"
+          ],
+          "components": [
+            "箱体",
+            "转动轴",
+            "清洗箱",
+            "加热装置",
+            "喷嘴",
+            "底盘"
+          ],
+          "solutions": [],
+          "effects": [],
+          "relation_summary": "Keywords: 器械清洗烘干装置, 眼科手术器械清洗烘干装置, 底盘上方经支架, 上方经支架, 洗烘干装置, 械清洗烘干装置, 加热装置, 装置; Applicants: 南阳医学高等专科学校第一附属医院; Inventors: 刁婷婷; IPC: F26B21/00, B08B3/02; Sections: 背景技术, 实用新型内容, 具体实施方式, 附图说明, 技术领域; Claim count: 7; Technical fields: 医疗器械技术领域; Technical problems: 眼科手术器械清洗和烘干分别进行; Key components: 箱体, 转动轴, 清洗..."
+        }
+      ]
+    },
+    {
+      "case_id": "idea_medical_cleaning_device",
+      "category": "idea_analysis",
+      "question": "我想设计一个医疗器械清洗装置，可以借鉴哪些现有专利结构，并需要避免哪些问题？",
+      "expected_patent_ids": [
+        "CN207641928U",
+        "CN207494109U",
+        "CN209489954U"
+      ],
+      "source_patent_ids": [
+        "CN209074691U",
+        "CN207641928U",
+        "CN209108420U"
+      ],
+      "graph_patent_ids": [
+        "CN207641928U",
+        "CN209074691U",
+        "CN209108420U",
+        "CN207494109U",
+        "CN209489954U"
+      ],
+      "expected_in_sources": [
+        "CN207641928U"
+      ],
+      "expected_in_graph_sources": [
+        "CN207641928U",
+        "CN207494109U",
+        "CN209489954U"
+      ],
+      "missing_expected_patents": [],
+      "graph_source_count": 5,
+      "source_count": 5,
+      "has_source_citation": false,
+      "has_graph_citation": false,
+      "answer_length": 0,
+      "answer_preview": "",
+      "graph_evidence_preview": [
+        {
+          "source_id": "G1",
+          "patent_id": "CN207641928U",
+          "title": "一种眼科手术器械清洗烘干装置",
+          "technical_fields": [
+            "医疗器械技术领域"
+          ],
+          "problems": [
+            "眼科手术器械清洗和烘干分别进行"
+          ],
+          "components": [
+            "箱体",
+            "转动轴",
+            "清洗箱",
+            "加热装置",
+            "喷嘴",
+            "底盘"
+          ],
+          "solutions": [],
+          "effects": [],
+          "relation_summary": "Keywords: 器械清洗烘干装置, 眼科手术器械清洗烘干装置, 底盘上方经支架, 上方经支架, 洗烘干装置, 械清洗烘干装置, 加热装置, 装置; Applicants: 南阳医学高等专科学校第一附属医院; Inventors: 刁婷婷; IPC: F26B21/00, B08B3/02; Sections: 背景技术, 实用新型内容, 具体实施方式, 附图说明, 技术领域; Claim count: 7; Technical fields: 医疗器械技术领域; Technical problems: 眼科手术器械清洗和烘干分别进行; Key components: 箱体, 转动轴, 清洗..."
+        },
+        {
+          "source_id": "G2",
+          "patent_id": "CN209074691U",
+          "title": "一种内分泌用临床取检装置",
+          "technical_fields": [
+            "临床取检技术领域"
+          ],
+          "problems": [
+            "无法集中收集检验",
+            "无法快速选择取检容器",
+            "样本常温下易凝固影响检验效果"
+          ],
+          "components": [
+            "置袋盒",
+            "制冷箱",
+            "置管板"
+          ],
+          "solutions": [],
+          "effects": [],
+          "relation_summary": "Keywords: 取检装置, 一侧安装有固定架, 顶端贯穿固定架, 内分泌用临床取检装置, 检装置, 决了现有取检装置, 外部一侧位于固定架, 泌用临床取检装置; Applicants: 南阳医学高等专科学校第一附属医院; Inventors: 郭威; IPC: A61B10/00; Sections: 技术领域, 背景技术, 具体实施方式, 附图说明, 实用新型内容; Claim count: 6; Technical fields: 临床取检技术领域; Technical problems: 无法集中收集检验, 无法快速选择取检容器, 样本常温下易凝固影响检验效果, 无法灵活移动; Ke..."
+        },
+        {
+          "source_id": "G3",
+          "patent_id": "CN209108420U",
+          "title": "一种内分泌临床多方位治疗装置",
+          "technical_fields": [
+            "多方位治疗技术领域"
+          ],
+          "problems": [
+            "只能治疗某个部位，无法全方位治疗",
+            "无法在治疗的同时辅助调节患者内分泌紊乱",
+            "无法根据患者情况调节治疗装置"
+          ],
+          "components": [
+            "弧形板",
+            "中频电磁治疗仪",
+            "理疗仪",
+            "电极片"
+          ],
+          "solutions": [],
+          "effects": [],
+          "relation_summary": "Keywords: 疗装置, 使装置, 装置, 内分泌科治疗装置, 内分泌临床多方位治疗装置, 方位治疗装置, 床多方位治疗装置, 位治疗装置; Applicants: 南阳医学高等专科学校第一附属医院; Inventors: 郭威; IPC: A61H33/06, A61M37/00, A61N1/36; Sections: 实用新型内容, 技术领域, 背景技术, 具体实施方式, 附图说明; Claim count: 6; Technical fields: 多方位治疗技术领域; Technical problems: 只能治疗某个部位，无法全方位治疗, 无法在治疗的同时辅助调节患者内分泌紊..."
+        },
+        {
+          "source_id": "G4",
+          "patent_id": "CN207494109U",
+          "title": "医用奶嘴专用清洗框",
+          "technical_fields": [
+            "奶嘴清洗装置"
+          ],
+          "problems": [
+            "奶嘴装载量少",
+            "奶嘴易碰触设备侧壁",
+            "奶嘴清洗效果差"
+          ],
+          "components": [
+            "方形格栅",
+            "内框架",
+            "清洗框本体"
+          ],
+          "solutions": [
+            "上下间隔扣放的上框和下框结构"
+          ],
+          "effects": [],
+          "relation_summary": "Keywords: 奶嘴专用清洗框, 所述清洗框, 机或高压灭绝设备, 清洗框, 医用奶嘴专用清洗框, 用清洗框, 包括清洗框, 奶嘴和奶瓶盖清洗框; Applicants: 黄河三门峡医院; Inventors: 刘学芳乔彦博; IPC: B08B13/00, B08B3/02; Sections: 背景技术, 发明内容, 具体实施方式, 附图说明, 技术领域; Claim count: 4; Technical fields: 奶嘴清洗装置; Technical problems: 奶嘴装载量少, 奶嘴易碰触设备侧壁, 奶嘴清洗效果差; Key components: 方形格栅, 内框架,..."
+        },
+        {
+          "source_id": "G5",
+          "patent_id": "CN209489954U",
+          "title": "一种超声雾化窗纱清洗装置",
+          "technical_fields": [
+            "窗纱清洗工具领域"
+          ],
+          "problems": [
+            "高压水冲法导致污水外流污染环境",
+            "传统清洁纱窗方式工作量大、易破网、不易清洁干净"
+          ],
+          "components": [
+            "超声雾化装置",
+            "清洗头",
+            "吸尘器主机",
+            "雾化器"
+          ],
+          "solutions": [],
+          "effects": [
+            "避免污水外流"
+          ],
+          "relation_summary": "Keywords: 装置, 超声雾化窗纱清洗装置, 超声波雾化器, 雾化窗纱清洗装置, 洗头后部设置雾化器, 雾化器, 洗装置, 泵和超声雾化装置; Applicants: 南阳医学高等专科学校第一附属医院; Inventors: 张俊鹏; IPC: A47L9/00, A47L4/00, A47L9/06, A47L7/00; Sections: 附图说明, 实用新型内容, 技术领域, 背景技术, 具体实施方式; Claim count: 6; Technical fields: 窗纱清洗工具领域; Technical problems: 高压水冲法导致污水外流污染环境, 传统清洁纱窗方式工..."
+        }
+      ]
+    }
+  ]
+}

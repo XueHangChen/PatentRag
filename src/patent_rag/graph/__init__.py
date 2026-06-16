@@ -2,8 +2,16 @@
 
 from patent_rag.graph.extractor import (
     GraphExtractionResult,
+    TechnicalGraphExtractor,
     extract_graph_from_documents,
     extract_keywords_for_document,
+)
+from patent_rag.graph.llm_extractor import (
+    LlmTechnicalEntity,
+    LlmTechnicalGraphDecision,
+    LlmTechnicalGraphExtractor,
+    LlmTechnicalRelation,
+    TechnicalGraphExtractionSummary,
 )
 from patent_rag.graph.store import (
     GraphStats,
@@ -17,6 +25,12 @@ from patent_rag.graph.store import (
 __all__ = [
     "GraphExtractionResult",
     "GraphStats",
+    "LlmTechnicalEntity",
+    "LlmTechnicalGraphDecision",
+    "LlmTechnicalGraphExtractor",
+    "LlmTechnicalRelation",
+    "TechnicalGraphExtractionSummary",
+    "TechnicalGraphExtractor",
     "build_networkx_graph",
     "extract_graph_from_documents",
     "extract_keywords_for_document",
